@@ -1,0 +1,78 @@
+//
+//  InputTextButton.m
+//  ImGuiTest
+//
+//  Created by Jason Van Cleave on 2/12/16.
+//
+//
+#import <UIKit/UIKit.h>
+
+#include "InputTextButton.h"
+#ifdef __cplusplus
+#include <string>
+#endif
+
+
+
+@implementation TextFieldDelegate
+
+- (void)textFieldEditingChanged:(id)sender
+{
+    
+    UITextField* textField = (UITextField *)sender;
+    inputTextButton->onTextEdit([textField.text UTF8String]);
+}
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
+}
+@end
+
+
+void InputTextButton::onTextEdit(std::string s)
+{
+    text = [textField.text UTF8String];
+    if(text.empty())
+    {
+        //text = [textField.placeholder UTF8String];
+    }
+}
+InputTextButton::InputTextButton()
+{
+    textField = NULL;
+    text = "";
+    textFieldDelegate = [[TextFieldDelegate alloc] init];
+};
+
+void InputTextButton::setup(std::string initialString)
+{
+    text = initialString;
+    
+    textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 100, 20)];
+    textField.text = [NSString stringWithUTF8String:text.c_str()];
+    textField.placeholder = textField.text;
+    textField.hidden = YES;
+    textField.delegate = textFieldDelegate;
+    textFieldDelegate->inputTextButton  = this;
+    
+    [textField addTarget:textFieldDelegate
+                    action:@selector(textFieldEditingChanged:)
+                    forControlEvents:UIControlEventEditingChanged];
+    
+    
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    [window addSubview:textField];
+    
+}
+void InputTextButton::draw()
+{
+    if(ImGui::Button(text.c_str()))
+    {
+        if(![textField isFirstResponder])
+        {
+            [textField becomeFirstResponder];
+        }
+    }
+    textField.text = [NSString stringWithUTF8String:text.c_str()];
+}
+
