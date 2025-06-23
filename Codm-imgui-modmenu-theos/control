@@ -1,0 +1,8 @@
+Package: com.anhvu99er.imgui.mod.menu
+Name: ImGui ModMenu Template
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm
+Description: ImGui ModMenu Template for Theos
+Maintainer: Anhvu99er
+Author: Anhvu99er
